@@ -1,3 +1,18 @@
+/******************************************************************************
+ * File: smart_delay.h
+ * Author: Rafael F. P. Risson
+ * License: MIT License
+ * 
+ * Description: 
+ *   A C library for non-blocking delays with step-based sequencing support,
+ *   ideal for embedded systems using polling or cooperative multitasking.
+ *
+ * Copyright (c) 2025 Rafael F. P. Risson. All rights reserved.
+ * 
+ * This software is released under the MIT License. 
+ * See LICENSE file for details.
+ ******************************************************************************/
+
 #ifndef __SMART_DELAY_H__
 #define __SMART_DELAY_H__
 
