@@ -12,11 +12,11 @@ typedef enum {
 smart_delay_status_t;
 
 struct smart_delay_info {
-	int id;
-	int step;
-	bool active;
-	uint32_t duration;
-	uint32_t start_time;
+    int id;
+    int step;
+    bool active;
+    uint32_t duration;
+    uint32_t start_time;
 };
 
 typedef struct smart_delay_info smart_delay_t;
