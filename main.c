@@ -13,13 +13,14 @@
     #define sleep(ms) usleep((ms) * 1000)
 #endif
 
-uint32_t diff(smart_delay_t *sd, uint32_t now) {
+int diff(smart_delay_t *sd, uint32_t now) {
     return sd ? now - sd->start_time : -1;
 }
 
 void test_print(int id, smart_delay_t *sd, uint32_t t, uint32_t now) {
-    uint32_t d = diff(sd, now);
-    printf("test[%d] elapsed step %d (now %ld startted %ld diff %ld error %ld)\n", id, sd->step, now, sd->start_time, d, d - t);
+    int d = diff(sd, now);
+    int e = d - t;
+    printf("test[%d] elapsed step %d (now %ld startted %ld diff %d error %ld)\n", id, sd->step, now, sd->start_time, d, e);
 }
 
 void simple_test(int id, smart_delay_t *sd, uint32_t delay, uint32_t now) {
@@ -84,6 +85,26 @@ void sequencial_steps_unique_test(int id, smart_delay_t *sd, uint32_t delay, uin
     step = (step + 1) % 10;
 }
 
+void overflow_test(int id, smart_delay_t *sd, uint32_t delay, uint32_t now) {
+    static uint32_t last_now = 0;
+    static uint32_t fake_now = 0;
+    static bool init = true;
+    
+    if (init) {
+        init = false;
+        fake_now = 0xFFFFFFFF - ((delay / 2) + now);
+    } else {
+        fake_now += (uint32_t)(now - last_now);
+    }
+    
+    last_now = now;
+    
+    if (smart_delay_is_elapsed(id, sd, delay, fake_now)) {
+        test_print(id, sd, delay, fake_now);
+        init = true;
+    }
+}
+
 struct test {
     smart_delay_t sd;
     uint32_t delay;
@@ -97,9 +118,9 @@ int main(void) {
         { .sd = {0}, .fnc = defined_steps_test },
         { .sd = {0}, .fnc = sequencial_steps_all_test },
         { .sd = {0}, .fnc = sequencial_steps_unique_test },
+        { .sd = {0}, .delay = 6000, .fnc = overflow_test },
     };
     int max = sizeof(tests) / sizeof(tests[0]);
-    
     
     printf("start %d tests\n", max);
     

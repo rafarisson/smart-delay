@@ -12,7 +12,7 @@
  * This software is released under the MIT License. 
  * See LICENSE file for details.
  ******************************************************************************/
- 
+
 #include "smart_delay.h"
 
 smart_delay_status_t smart_stepped_delay(int id, smart_delay_t *sd, uint32_t delay, uint32_t current_time, int current_step) {
@@ -32,8 +32,9 @@ smart_delay_status_t smart_stepped_delay(int id, smart_delay_t *sd, uint32_t del
 
     if (sd->id != id || sd->step != current_step)
         return SMART_DELAY_INVALID;
-
-    if (current_time - sd->start_time >= sd->duration)
+    
+    uint32_t diff = current_time - sd->start_time;
+    if (diff >= sd->duration)
         sd->active = false;
 
     return sd->active ? SMART_DELAY_WAITING : SMART_DELAY_ELAPSED;
